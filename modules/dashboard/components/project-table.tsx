@@ -39,6 +39,8 @@ import Link from "next/link"
 import { useState } from "react"
 import { MoreHorizontal, Edit3, Trash2, ExternalLink, Copy, Download, Eye } from "lucide-react"
 import { toast } from "sonner"
+import { se } from "date-fns/locale"
+import { MarkedToggleButton } from "./marked-toggle"
 
 
 interface ProjectTableProps {
@@ -69,15 +71,34 @@ export default function ProjectTable({
   const [favoutrie, setFavourite] = useState(false)
   
   const handleEditClick = (project: Project) => {
-//    Write your logic here
+    setSelectedProject(project);
+    setEditData({
+      title: project.title,
+      description: project.description || ""
+    })
+    setEditDialogOpen(true);
   }
 
   const handleDeleteClick = async (project: Project) => {
-    //    Write your logic here
+    setSelectedProject(project);
+
+    setEditDialogOpen(true);
   }
 
   const handleUpdateProject = async () => {
-   //    Write your logic here
+   if(!selectedProject || !onUpdateProject) return;
+   
+   setIsLoading(true);
+   try {
+     await onUpdateProject(selectedProject.id, editData);
+     setEditDialogOpen(false);
+     toast.success("Project updated successfully");
+   } catch (error) {
+     console.log(error);
+   }finally{
+     setIsLoading(false);
+   }
+
   }
 
   const handleMarkasFavorite = async (project: Project) => {
@@ -85,15 +106,40 @@ export default function ProjectTable({
   }
 
   const handleDeleteProject = async () => {
-   //    Write your logic here
+    if(!selectedProject || !onDeleteProject) return;
+
+    setIsLoading(true);
+    try {
+      await onDeleteProject(selectedProject.id);
+      setEditDialogOpen(false);
+      setSelectedProject(null);
+      toast.success("Project deleted successfully");
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setIsLoading(false);
+    }
   }
 
   const handleDuplicateProject = async (project: Project) => {
-    //    Write your logic here
+    if(!project || !onDuplicateProject) return;
+
+    setIsLoading(true);
+    try {
+      const duplicatedProject = await onDuplicateProject(project.id);
+      toast.success("Project duplicated successfully");
+    } catch (error) {
+      toast.error("Error duplicating project");
+      console.log(error);
+    }finally{
+      setIsLoading(false);
+    }
   }
 
   const copyProjectUrl = (projectId: string) => {
-    //    Write your logic here
+    const url = `${window.location.origin}/playground/${projectId}`;
+    navigator.clipboard.writeText(url);
+    toast.success("Project URL copied to clipboard");
   }
 
   return (
@@ -150,7 +196,7 @@ export default function ProjectTable({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem>
-                        {/* <MarkedToggleButton markedForRevision={project.Starmark[0]?.isMarked} id={project.id} /> */}
+                        <MarkedToggleButton  markedForRevision={project.StarMark[0]?.isMarked} id={project.id} />
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Link href={`/playground/${project.id}`} className="flex items-center">

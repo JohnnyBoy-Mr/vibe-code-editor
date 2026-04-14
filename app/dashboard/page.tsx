@@ -1,9 +1,9 @@
-import { getAllPlaygroundForUser } from '@/modules/dashboard/actions'
+import { deleteProjectById, duplicateProjectById, editProjectById, getAllPlaygroundForUser } from '@/modules/dashboard/actions'
 import AddNewButton from '@/modules/dashboard/components/add-new'
 import AddRepo from '@/modules/dashboard/components/add-repo'
 import EmptyState from '@/modules/dashboard/components/empty-state'
 import ProjectTable from '@/modules/dashboard/components/project-table'
-import { pl } from 'date-fns/locale'
+import { de, pl } from 'date-fns/locale'
 import React from 'react'
 
 const page = async () => {
@@ -18,14 +18,14 @@ const page = async () => {
       </div>
       <div className="m-10 flex flex-col items-center justify-center w-full">
         {
-          playgroundData && playgroundData.length === 0 ? (
+          !playgroundData || playgroundData.length === 0 ? (
             <EmptyState />
           ): (
             <ProjectTable 
-            projects={playgroundData}
-            onDeleteProject = {() => {}}
-            onUpdateProject = {() => {}}
-            onDuplicateProject = {() => {}}
+            projects={playgroundData || []}
+            onDeleteProject = {deleteProjectById}
+            onUpdateProject = {editProjectById}
+            onDuplicateProject = {duplicateProjectById}
             />
           )
         }
