@@ -3,6 +3,10 @@
 import React from 'react'
 import { useParams } from 'next/navigation'
 import { usePlayground } from '@/modules/playground/hooks/usePlayground';
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip';
+import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { Separator } from '@/components/ui/separator';
+import { TemplateFileTree } from '@/modules/playground/components/playground-explorer';
 
 function MainPlaygroundPage() {
 
@@ -10,13 +14,42 @@ function MainPlaygroundPage() {
 
         const { playgroundData, templateData, isLoading, error, saveTemplateData } = usePlayground(id);
 
-        console.log(playgroundData)
-        console.log(templateData)
+        console.log("Playground Data: ", playgroundData)
+        console.log("Template Data: ", templateData)
+
+
+         const activeFile = "sample.txt"
 
   return (
-    <div>
-        Params: {id}
-    </div>
+    <TooltipProvider>
+        <>
+        <TemplateFileTree
+          data={templateData!}
+          onFileSelect={()=>{}}
+          selectedFile={activeFile}
+          title="File Explorer"
+          onAddFile={()=>{}}
+          onAddFolder={()=>{}}
+          onDeleteFile={()=>{}}
+          onDeleteFolder={()=>{}}
+          onRenameFile={()=>{}}
+          onRenameFolder={()=>{}}
+        />
+        <SidebarInset>
+          <header className="flex h-16 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-m-1" />
+          <Separator orientation='vertical' className="mr-2 h-4" />
+          </header>
+          <div className='flex flex-1 items-center gap-2'>
+            <div className="flex flex-col flex-1">
+              <h1 className="text-sm font-medium">
+                {playgroundData?.title || "Code Playground"}
+              </h1>
+            </div> 
+          </div>
+        </SidebarInset>
+        </>
+    </TooltipProvider>
   )
 }
 
