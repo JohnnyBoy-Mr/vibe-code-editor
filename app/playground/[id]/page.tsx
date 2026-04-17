@@ -21,6 +21,7 @@ import WebContainerPreview from '@/modules/webcontainers/components/webcontainer
 import LoadingStep from '@/modules/playground/components/loader';
 import { findFilePath } from '@/modules/playground/lib';
 import { toast } from 'sonner';
+import ToggleAI from '@/modules/playground/components/toggle-ai';
 
 function MainPlaygroundPage() {
 
@@ -377,9 +378,12 @@ function MainPlaygroundPage() {
                 </TooltipTrigger>
                 <TooltipContent>Save All (Ctrl+Shift+S)</TooltipContent>
               </Tooltip>
-              <Button variant={"default"} size={"icon"}>
-                <Bot className="size-4" />
-              </Button>
+
+              <ToggleAI
+                isEnabled={true}
+                onToggle={() => {}}
+                suggestionLoading={false}
+              />
 
               <DropdownMenu>
                   <DropdownMenuTrigger >
@@ -387,6 +391,7 @@ function MainPlaygroundPage() {
                       <Settings className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
+                  
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
                       onClick={() => setIsPreviewVisible(!isPreviewVisible)}
